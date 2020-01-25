@@ -18,15 +18,16 @@ ball2 = Ball("ball.png", (50, 20), [-4, 3])  # создаём мяч
 
 sled = Sled("sled.png", (20, 0), [0, 0]) # создаём платформу
 
-balls = pg.sprite.Group()
-balls.add(ball1)
-balls.add(ball2)
+balls = pg.sprite.Group() # группа мячей
 
 again = True
 while again:
     for event in pg.event.get():
         if event.type == pg.QUIT: again = False
     
+    if ball1 not in balls: balls.add(ball1)
+    if ball2 not in balls: balls.add(ball2)
+
     # логика перемещения платформы
     pressed = pg.key.get_pressed() # вернем все зажатые клавиши
     if pressed[pg.K_UP]:
@@ -36,8 +37,8 @@ while again:
     else: sled.speed[1] = 0
 
     # логика столкновения мяча с платформой
-    if pg.sprite.spritecollide(sled, balls, False, pg.sprite.collide_mask):
-        for ball in balls: ball.speed[0] = -ball.speed[0]
+    collided_balls = pg.sprite.spritecollide(sled, balls, True, pg.sprite.collide_mask)
+    for ball in collided_balls: ball.speed[0] = -ball.speed[0]
 
     # логика отскока мяча от границ экрана
     if ball1.rect.left < 0 or ball1.rect.right > width:
