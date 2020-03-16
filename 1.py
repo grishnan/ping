@@ -25,8 +25,9 @@ while again:
     for event in pg.event.get():
         if event.type == pg.QUIT: again = False
     
-    if ball1 not in balls: balls.add(ball1)
-    if ball2 not in balls: balls.add(ball2)
+    # добавляем мячи в группу
+    balls.add(ball1)
+    balls.add(ball2)
 
     # логика перемещения платформы
     pressed = pg.key.get_pressed() # вернем все зажатые клавиши
@@ -38,8 +39,10 @@ while again:
 
     # логика столкновения мяча с платформой
     collided_balls = pg.sprite.spritecollide(sled, balls, True, pg.sprite.collide_mask)
-    for ball in collided_balls: ball.speed[0] = -ball.speed[0]
-
+    for ball in collided_balls:
+        ball.rect.left += 3 # TODO
+        ball.speed[0] = -ball.speed[0]
+    
     # логика отскока мяча от границ экрана
     if ball1.rect.left < 0 or ball1.rect.right > width:
         ball1.speed[0] = -ball1.speed[0]
