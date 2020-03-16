@@ -3,12 +3,9 @@
 import pygame as pg
 from pygame.locals import *
 from go import Ball, Sled # игровые объекты
+from consts import *
 
 pg.init()
-
-FPS  = 60
-SIZE = width, height = 640, 480
-BGCOLOR = 90, 90, 90
 
 screen = pg.display.set_mode(SIZE)         # создаём окошко
 clock  = pg.time.Clock()                   # создаем таймер
@@ -43,17 +40,9 @@ while again:
         ball.rect.left += 3 # TODO
         ball.speed[0] = -ball.speed[0]
     
-    # логика отскока мяча от границ экрана
-    if ball1.rect.left < 0 or ball1.rect.right > width:
-        ball1.speed[0] = -ball1.speed[0]
-    if ball1.rect.top < 0 or ball1.rect.bottom > height:
-        ball1.speed[1] = -ball1.speed[1]
-    
-    # логика отскока мяча от границ экрана
-    if ball2.rect.left < 0 or ball2.rect.right > width:
-        ball2.speed[0] = -ball2.speed[0]
-    if ball2.rect.top < 0 or ball2.rect.bottom > height:
-        ball2.speed[1] = -ball2.speed[1]
+    # логика отскока мячей от платформы
+    ball1.logic()
+    ball2.logic()
     
     sled.rect = sled.rect.move(sled.speed)    # сдвинуть прямоугольник платформы
     ball1.rect = ball1.rect.move(ball1.speed) # сдвинуть прямоугольник мяча
