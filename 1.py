@@ -4,55 +4,35 @@ import pygame as pg
 from pygame.locals import *
 from go import Ball, Sled # игровые объекты
 from consts import *
+from random import randint as rnd
 
 pg.init()
 
 screen = pg.display.set_mode(SIZE)         # создаём окошко
 clock  = pg.time.Clock()                   # создаем таймер
 
-ball1 = Ball("ball.png", (50, 20), [4, 4])   # создаём мяч
-ball2 = Ball("ball.png", (50, 20), [-4, 3])  # создаём мяч
+# список мячей
+balls = [Ball("ball.png", (rnd(50, 500), rnd(50, 400)), [(-1)**rnd(1, 9)*rnd(1, 9), (-1)**rnd(1, 9)*rnd(1, 9)]) for i in range(0, NUMBALLS)]
 
 sled = Sled("sled.png", (20, 0), [0, 0]) # создаём платформу
 
-balls = pg.sprite.Group() # группа мячей
+gballs = pg.sprite.Group() # группа мячей
 
 again = True
 while again:
     for event in pg.event.get():
         if event.type == pg.QUIT: again = False
     
-    # добавляем мячи в группу
-    balls.add(ball1)
-    balls.add(ball2)
-
-    # логика перемещения платформы
-    pressed = pg.key.get_pressed() # вернем все зажатые клавиши
-    if pressed[pg.K_UP]:
-        sled.speed[1] = -2 if sled.rect.top >= 0 else 0
-    elif pressed[pg.K_DOWN]:
-        sled.speed[1] = 2 if sled.rect.bottom <= height else 0
-    else: sled.speed[1] = 0
-
-    # логика столкновения мяча с платформой
-    collided_balls = pg.sprite.spritecollide(sled, balls, True, pg.sprite.collide_mask)
-    for ball in collided_balls:
-        ball.rect.left += 3 # TODO
-        ball.speed[0] = -ball.speed[0]
+    for ball in balls: ball.add(gballs)  # добавляем мячи в группу
+    sled.logic()                         # логика перемещения платформы
+    sled.collide(gballs)                 # логика столкновения мяча с платформой
+    for ball in balls: ball.logic()      # логика отскока мячей от платформы
+    sled.move()                          # пермещение платформы
+    for ball in balls: ball.move()       # перемещение мячиков
     
-    # логика отскока мячей от платформы
-    ball1.logic()
-    ball2.logic()
-    
-    sled.rect = sled.rect.move(sled.speed)    # сдвинуть прямоугольник платформы
-    ball1.rect = ball1.rect.move(ball1.speed) # сдвинуть прямоугольник мяча
-    ball2.rect = ball2.rect.move(ball2.speed) # сдвинуть прямоугольник мяча
-    
-    # отрисовка изображений
-    screen.fill(BGCOLOR)
-    screen.blit(sled.img, sled.rect)
-    screen.blit(ball1.img, ball1.rect)
-    screen.blit(ball2.img, ball2.rect)
+    screen.fill(BGCOLOR)                 # заливка экрана
+    sled.draw(screen)                    # отрисовка платформы
+    for ball in balls: ball.draw(screen) # отрисовка мячиков
 
     pg.display.update()
     clock.tick(FPS)
