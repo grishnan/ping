@@ -26,7 +26,7 @@ while again:
     for ball in balls: ball.add(gballs)  # добавляем мячи в группу
     sled.logic()                         # логика перемещения платформы
     sled.collide(gballs)                 # логика столкновения мяча с платформой
-    for ball in balls: ball.logic()      # логика отскока мячей от платформы
+    for ball in balls: ball.logic()      # логика отскока мячей от стен
     sled.move()                          # пермещение платформы
     for ball in balls: ball.move()       # перемещение мячиков
     

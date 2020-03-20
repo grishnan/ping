@@ -29,7 +29,7 @@ class Ball(GameObject):
         super().__init__(img, initpos, speed)
     
     def logic(self):
-        ''' логика отскока мяча от платформы '''
+        ''' логика отскока мяча от стен '''
         if self.rect.left < 0 or self.rect.right > width:
             self.speed[0] = -self.speed[0]
         if self.rect.top < 0 or self.rect.bottom > height:
@@ -51,7 +51,6 @@ class Sled(GameObject):
 
     def collide(self, gballs):
         ''' столкновение платформы с мячиками '''
-        collided_balls = pg.sprite.spritecollide(self, gballs, True, pg.sprite.collide_mask)
         collided_balls = pg.sprite.spritecollide(self, gballs, True, pg.sprite.collide_mask)
         for ball in collided_balls:
             ball.rect.left += 3 # TODO
